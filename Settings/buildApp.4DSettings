@@ -41,12 +41,13 @@
     </ArrayExcludedComponentName>
     <Licenses>
       <ArrayLicenseMac>
-        <ItemsCount>0</ItemsCount>
+        <ItemsCount>1</ItemsCount>
+        <Item1>Macintosh HD:Users:stanislas:Library:Application Support:4D:Licenses:4UOE200UUS001APMCJ0D669.license4D</Item1>
       </ArrayLicenseMac>
     </Licenses>
     <SignApplication>
       <MacSignature>True</MacSignature>
-      <MacCertificate>Vincent de Lachaux (DYRKW64QA9)</MacCertificate>
+      <MacCertificate>Developer ID Application: GHS (FR) (74M25885A6)</MacCertificate>
       <AdHocSign>True</AdHocSign>
     </SignApplication>
     <RuntimeVL>
@@ -56,6 +57,7 @@
       <ItemsCount>0</ItemsCount>
     </ArrayExcludedModuleName>
   </BuildApp>
+
 
 
 
