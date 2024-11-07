@@ -11,7 +11,7 @@
     
     <header>
       <prop-group name="4DPop Constant editor">
-        <prop prop-type="version">13.0</prop>
+        <prop prop-type="version">20 (81)</prop>
       </prop-group>
     </header>
     
@@ -10193,7 +10193,7 @@
           <source>gBaReducZfu</source>
         </trans-unit>
         <trans-unit d4:value="300" id="k_3186">
-          <source>gBaReducZrrZru</source>
+          <source>gBaReducZfrrZrr</source>
         </trans-unit>
         <trans-unit d4:value="301" id="k_3187">
           <source>gBazzzReducFillon</source>
