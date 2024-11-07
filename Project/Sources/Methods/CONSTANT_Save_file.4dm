@@ -43,7 +43,7 @@ If (OK=1)
 	$Lst_buffer:=Copy list:C626($Lst_buffer)
 	Lsth_SortByParam($Lst_buffer; "index")
 	
-	For ($Lon_i; 1; Count list items:C380($Lst_buffer); 1)
+	For ($Lon_i; 1; Count list items:C380($Lst_buffer; *); 1)
 		
 		GET LIST ITEM:C378($Lst_buffer; $Lon_i; $Lon_UID; $Txt_label; $Lst_constants; $Boo_expanded)
 		
@@ -75,10 +75,10 @@ If (OK=1)
 								//______________________________________________________
 							: ($Txt_type="R")
 								
-								GET LIST ITEM PARAMETER:C985($Lst_constants; $Lon_UID; "value"; $Num_value)
-								$Txt_value:=String:C10($Num_value)
-								//GET LIST ITEM PARAMETER($Lst_constants; $Lon_UID; "value"; $Txt_value)
-								//XML DECODE($Txt_value; $Num_value)
+								//GET LIST ITEM PARAMETER($Lst_constants; $Lon_UID; "value"; $Num_value)
+								//$Txt_value:=String($Num_value)
+								GET LIST ITEM PARAMETER:C985($Lst_constants; $Lon_UID; "value"; $Txt_value)
+								XML DECODE:C1091($Txt_value; $Num_value)
 								
 								//______________________________________________________
 							: ($Txt_type="L")
@@ -125,7 +125,9 @@ If (OK=1)
 			
 		Else 
 			
-			TRACE:C157
+			If ($Lst_constants#0)
+				TRACE:C157
+			End if 
 			
 		End if 
 	End for 

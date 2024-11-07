@@ -203,7 +203,8 @@ If (OK=1)
 										DOM GET XML ATTRIBUTE BY INDEX:C729($Dom_element; $Lon_iii; $Txt_name; $Lon_value)
 										
 										//…………………………………………………………………………
-									: (string_isNumeric($Txt_value))
+										//: (string_isNumeric($Txt_value))
+									: (Match regex:C1019("\\d*\\.\\d+"; $Txt_value))
 										
 										$Txt_type:="R"
 										DOM GET XML ATTRIBUTE BY INDEX:C729($Dom_element; $Lon_iii; $Txt_name; $Num_value)
