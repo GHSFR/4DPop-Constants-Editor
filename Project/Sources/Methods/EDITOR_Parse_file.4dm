@@ -17,7 +17,7 @@ C_LONGINT:C283($Lon_error; $Lon_i; $Lon_ii; $Lon_iii; $Lon_parameters; $Lon_size
 C_LONGINT:C283($Lst_constants; $Lon_constantIndex)
 C_REAL:C285($Num_value)
 C_TEXT:C284($Dom_buffer; $Dom_element; $Dom_group; $Dom_root; $Dom_source; $kTxt_decimalSeparator; $Txt_buffer; $Txt_groupName; $Txt_name; $Txt_path)
-C_TEXT:C284($Txt_type; $Txt_value; $Txt_groupUuid)
+C_TEXT:C284($Txt_type; $Txt_value; $Txt_groupUuid; $Txt_groupId; $Dom_element2)
 
 ARRAY TEXT:C222($tDom_elements; 0)
 
@@ -91,11 +91,13 @@ If (OK=1)
 					If ($Lon_x>0)
 						
 						$Txt_groupName:=$tTxt_groupName{$Lon_x}
+						$Txt_groupId:=$tTxt_groupId{$Lon_x}
 						
 					Else 
 						
 						$Txt_buffer:=Get localized string:C991($Txt_value)
 						$Txt_groupName:=Choose:C955(Length:C16($Txt_buffer)>0; $Txt_buffer; $Txt_value)
+						$Txt_groupId:=$Txt_groupUuid
 						
 					End if 
 					
@@ -116,6 +118,7 @@ If (OK=1)
 				SET LIST ITEM PROPERTIES:C386($Lst_constants; 0; False:C215; Bold:K14:2; 0; 0x00ABABAB)
 				SET LIST ITEM PARAMETER:C986($Lst_constants; 0; "groupUuid"; $Txt_groupUuid)
 				SET LIST ITEM PARAMETER:C986($Lst_constants; 0; "index"; Form:C1466.lastThemeIndex)
+				SET LIST ITEM PARAMETER:C986($Lst_constants; 0; "id"; $Txt_groupId)
 				
 				$Dom_buffer:=DOM Find XML element:C864($Dom_group; "group/trans-unit"; $tDom_elements)
 				
@@ -273,6 +276,7 @@ If (OK=1)
 								SET LIST ITEM PARAMETER:C986($Lst_buffer; 0; Additional text:K28:7; $Txt_value)
 								
 								//----------------------
+								
 						End case 
 						
 						If (Position:C15($Txt_type; "RLS")>0)
@@ -294,18 +298,17 @@ If (OK=1)
 				
 				ARRAY TEXT:C222($tTxt_groupResname; $Lon_x)
 				ARRAY TEXT:C222($tTxt_groupName; $Lon_x)
+				ARRAY TEXT:C222($tTxt_groupId; $Lon_x)
 				
 				For ($Lon_ii; 1; $Lon_x; 1)
 					
 					$Dom_element:=$tDom_elements{$Lon_ii}
 					
 					DOM GET XML ATTRIBUTE BY NAME:C728($Dom_element; "resname"; $tTxt_groupResname{$Lon_ii})
+					DOM GET XML ATTRIBUTE BY NAME:C728($Dom_element; "id"; $tTxt_groupId{$Lon_ii})
 					
-					DOM GET XML ELEMENT VALUE:C731(\
-						DOM Find XML element:C864(\
-						$Dom_element; \
-						"trans-unit/source"); \
-						$tTxt_groupName{$Lon_ii})
+					$Dom_element2:=DOM Find XML element:C864($Dom_element; "trans-unit/source")
+					DOM GET XML ELEMENT VALUE:C731($Dom_element2; $tTxt_groupName{$Lon_ii})
 					
 				End for 
 				

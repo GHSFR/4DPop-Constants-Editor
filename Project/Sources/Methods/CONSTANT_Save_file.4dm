@@ -13,6 +13,7 @@ C_BOOLEAN:C305($Boo_expanded; $Boo_fixed)
 C_LONGINT:C283($Lon_constantId; $Lon_i; $Lon_j; $Lon_parameters; $Lon_themeId; $Lon_UID; $Lon_value; $Lst_buffer; $Lst_constants)
 C_REAL:C285($Num_value)
 C_TEXT:C284($Dom_constants; $Dom_root; $Txt_fileName; $Txt_groupName; $Txt_label; $Txt_type; $Txt_value)
+var $Txt_constantId; $Txt_themeId : Text
 
 If (False:C215)
 	C_BOOLEAN:C305(CONSTANT_Save_file; $0)
@@ -56,7 +57,11 @@ If (OK=1)
 			If ($Txt_groupName="")
 				$Txt_groupName:=Generate UUID:C1066
 			End if 
-			CONSTANT_NEW_THEME($Dom_root; "thm_"+String:C10($Lon_themeId); $Txt_groupName; $Txt_label)
+			GET LIST ITEM PARAMETER:C985($Lst_buffer; $Lon_UID; "id"; $Txt_themeId)
+			If ($Txt_themeId="")
+				$Txt_themeId:=$Txt_groupName
+			End if 
+			CONSTANT_NEW_THEME($Dom_root; $Txt_themeId; $Txt_groupName; $Txt_label)
 			
 			If (OK=1)
 				Lsth_SortByParam($Lst_constants; "index")
@@ -110,8 +115,12 @@ If (OK=1)
 						GET LIST ITEM PARAMETER:C985($Lst_constants; $Lon_UID; "fixed"; $Boo_fixed)
 						$Txt_value:=Choose:C955($Boo_fixed; $Txt_value+":"+$Txt_type; $Txt_value)
 						
-						$Lon_constantId:=$Lon_constantId+1
-						CONSTANT_NEW_CONSTANT($Dom_constants; $Txt_value; "k_"+String:C10($Lon_constantId); $Txt_label)
+						//$Lon_constantId:=$Lon_constantId+1
+						GET LIST ITEM PARAMETER:C985($Lst_constants; $Lon_UID; "id"; $Txt_constantId)
+						If ($Txt_constantId="")
+							$Txt_constantId:=Generate UUID:C1066
+						End if 
+						CONSTANT_NEW_CONSTANT($Dom_constants; $Txt_value; $Txt_constantId; $Txt_label)
 						
 					End if 
 				End for 
