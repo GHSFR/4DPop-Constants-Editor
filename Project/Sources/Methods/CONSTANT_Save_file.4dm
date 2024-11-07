@@ -40,6 +40,8 @@ End if
 $Dom_root:=CONSTANT_New_file
 
 If (OK=1)
+	$Lst_buffer:=Copy list:C626($Lst_buffer)
+	Lsth_SortByParam($Lst_buffer; "index")
 	
 	For ($Lon_i; 1; Count list items:C380($Lst_buffer); 1)
 		
@@ -49,10 +51,15 @@ If (OK=1)
 			
 			//create the theme
 			$Lon_themeId:=$Lon_themeId+1
-			$Txt_groupName:=Generate UUID:C1066
+			$Txt_groupName:=""
+			GET LIST ITEM PARAMETER:C985($Lst_buffer; $Lon_UID; "groupUuid"; $Txt_groupName)
+			If ($Txt_groupName="")
+				$Txt_groupName:=Generate UUID:C1066
+			End if 
 			CONSTANT_NEW_THEME($Dom_root; "thm_"+String:C10($Lon_themeId); $Txt_groupName; $Txt_label)
 			
 			If (OK=1)
+				Lsth_SortByParam($Lst_constants; "index")
 				
 				//create the constants' group
 				$Dom_constants:=CONSTANT_New_group($Dom_root; $Txt_groupName)
@@ -70,6 +77,8 @@ If (OK=1)
 								
 								GET LIST ITEM PARAMETER:C985($Lst_constants; $Lon_UID; "value"; $Num_value)
 								$Txt_value:=String:C10($Num_value)
+								//GET LIST ITEM PARAMETER($Lst_constants; $Lon_UID; "value"; $Txt_value)
+								//XML DECODE($Txt_value; $Num_value)
 								
 								//______________________________________________________
 							: ($Txt_type="L")
@@ -131,6 +140,7 @@ If (OK=1)
 	
 	DOM CLOSE XML:C722($Dom_root)
 	
+	CLEAR LIST:C377($Lst_buffer)
 End if 
 
 // ----------------------------------------------------

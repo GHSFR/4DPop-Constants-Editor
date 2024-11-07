@@ -14,10 +14,10 @@ C_POINTER:C301($2)
 
 C_BOOLEAN:C305($Boo_constantsDefinition; $Boo_fixed; $Boo_themeDefinition)
 C_LONGINT:C283($Lon_error; $Lon_i; $Lon_ii; $Lon_iii; $Lon_parameters; $Lon_size; $Lon_UID; $Lon_value; $Lon_x; $Lst_buffer)
-C_LONGINT:C283($Lst_constants)
+C_LONGINT:C283($Lst_constants; $Lon_constantIndex)
 C_REAL:C285($Num_value)
 C_TEXT:C284($Dom_buffer; $Dom_element; $Dom_group; $Dom_root; $Dom_source; $kTxt_decimalSeparator; $Txt_buffer; $Txt_groupName; $Txt_name; $Txt_path)
-C_TEXT:C284($Txt_type; $Txt_value)
+C_TEXT:C284($Txt_type; $Txt_value; $Txt_groupUuid)
 
 ARRAY TEXT:C222($tDom_elements; 0)
 
@@ -53,6 +53,7 @@ If (OK=1)
 	
 	ARRAY TEXT:C222($tDom_groups; 0x0000)
 	$Dom_buffer:=DOM Find XML element:C864($Dom_root; "xliff/file/body/group"; $tDom_groups)
+	Form:C1466.lastThemeIndex:=0
 	
 	For ($Lon_i; 1; Size of array:C274($tDom_groups); 1)
 		
@@ -83,6 +84,7 @@ If (OK=1)
 					
 					//………………………………………………………………
 				: ($Txt_name="d4:groupName")
+					$Txt_groupUuid:=$Txt_value
 					
 					$Lon_x:=Find in array:C230($tTxt_groupResname; $Txt_value)
 					
@@ -108,9 +110,12 @@ If (OK=1)
 				
 				$Lst_buffer:=New list:C375
 				
+				Form:C1466.lastThemeIndex+=1
 				$Lon_UID:=$Lon_UID+1
 				APPEND TO LIST:C376($Lst_constants; $Txt_groupName; -$Lon_UID; $Lst_buffer; False:C215)
 				SET LIST ITEM PROPERTIES:C386($Lst_constants; 0; False:C215; Bold:K14:2; 0; 0x00ABABAB)
+				SET LIST ITEM PARAMETER:C986($Lst_constants; 0; "groupUuid"; $Txt_groupUuid)
+				SET LIST ITEM PARAMETER:C986($Lst_constants; 0; "index"; Form:C1466.lastThemeIndex)
 				
 				$Dom_buffer:=DOM Find XML element:C864($Dom_group; "group/trans-unit"; $tDom_elements)
 				
@@ -133,6 +138,7 @@ If (OK=1)
 					
 					$Lon_UID:=$Lon_UID+1
 					APPEND TO LIST:C376($Lst_buffer; $Txt_name; $Lon_UID)
+					SET LIST ITEM PARAMETER:C986($Lst_buffer; 0; "index"; $Lon_ii)
 					
 					For ($Lon_iii; 1; DOM Count XML attributes:C727($Dom_element); 1)
 						
@@ -179,6 +185,7 @@ If (OK=1)
 										$Txt_type:="R"
 										$Txt_value:=Delete string:C232($Txt_value; Length:C16($Txt_value)-1; 2)
 										DOM GET XML ATTRIBUTE BY INDEX:C729($Dom_element; $Lon_iii; $Txt_name; $Num_value)
+										//XML DECODE($Txt_value; $Num_value)
 										$Boo_fixed:=True:C214
 										
 										//…………………………………………………………………………
@@ -200,6 +207,8 @@ If (OK=1)
 										
 										$Txt_type:="R"
 										DOM GET XML ATTRIBUTE BY INDEX:C729($Dom_element; $Lon_iii; $Txt_name; $Num_value)
+										//DOM GET XML ATTRIBUTE BY INDEX($Dom_element; $Lon_iii; $Txt_name; $Txt_value)
+										//XML DECODE($Txt_value; $Num_value)
 										
 										//…………………………………………………………………………
 									: (Rgx_SplitText(":"; $Txt_value; ->$tTxt_segments)=0)
@@ -273,6 +282,8 @@ If (OK=1)
 					End for 
 				End for 
 				
+				SET LIST ITEM PARAMETER:C986($Lst_constants; 0; "nextConstantIndex"; $Lon_ii)
+				
 				//______________________________________________________
 			: ($Boo_themeDefinition)
 				
@@ -305,6 +316,8 @@ If (OK=1)
 				//______________________________________________________
 		End case 
 	End for   //groups
+	
+	Lsth_SortByParam($Lst_constants; "_label_")
 	
 	DOM CLOSE XML:C722($Dom_root)
 	
