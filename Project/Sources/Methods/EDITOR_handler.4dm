@@ -18,7 +18,7 @@ C_TEXT:C284($1)
 
 C_BOOLEAN:C305($Boo_expanded; $Boo_OK)
 C_LONGINT:C283($Lon_action; $Lon_currentFile; $Lon_parameters; $Lon_uid; $Lon_Window; $Lon_x; $Lst_buffer; $Lst_constant)
-var $Lon_constantIndex : Integer
+var $Lon_constantIndex; $tLon_itemRef : Integer
 C_PICTURE:C286($Pic_file)
 C_TEXT:C284($Txt_entryPoint; $Txt_fileName; $Txt_Message; $Txt_name; $Txt_path)
 
@@ -241,8 +241,9 @@ Case of
 	: ($Txt_entryPoint="menu.new.constant")
 		
 		$Lst_constant:=Lsth_Get_list(<>Lst_constants)
-		GET LIST ITEM PARAMETER:C985(<>Lst_constants; $Lst_constant; "nextConstantIndex"; $Lon_constantIndex)
-		SET LIST ITEM PARAMETER:C986(<>Lst_constants; $Lst_constant; "nextConstantIndex"; $Lon_constantIndex+1)
+		GET LIST ITEM:C378(<>Lst_constants; *; $tLon_itemRef; $Txt_name)
+		GET LIST ITEM PARAMETER:C985(<>Lst_constants; $tLon_itemRef; "nextConstantIndex"; $Lon_constantIndex)
+		SET LIST ITEM PARAMETER:C986(<>Lst_constants; $tLon_itemRef; "nextConstantIndex"; $Lon_constantIndex+1)
 		
 		$Lon_uid:=obj_pointer("UID")->+1
 		
