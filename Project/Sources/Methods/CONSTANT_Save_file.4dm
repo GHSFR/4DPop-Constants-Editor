@@ -11,6 +11,7 @@ C_TEXT:C284($2)
 
 C_BOOLEAN:C305($Boo_expanded; $Boo_fixed)
 C_LONGINT:C283($Lon_constantId; $Lon_i; $Lon_j; $Lon_parameters; $Lon_themeId; $Lon_UID; $Lon_value; $Lst_buffer; $Lst_constants)
+var $Lon_nbConstants : Integer
 C_REAL:C285($Num_value)
 C_TEXT:C284($Dom_constants; $Dom_root; $Txt_fileName; $Txt_groupName; $Txt_label; $Txt_type; $Txt_value)
 var $Txt_constantId; $Txt_themeId : Text
@@ -64,71 +65,75 @@ If (OK=1)
 			CONSTANT_NEW_THEME($Dom_root; $Txt_themeId; $Txt_groupName; $Txt_label)
 			
 			If (OK=1)
-				Lsth_SortByParam($Lst_constants; "index")
-				
 				//create the constants' group
 				$Dom_constants:=CONSTANT_New_group($Dom_root; $Txt_groupName)
 				
-				For ($Lon_j; 1; Count list items:C380($Lst_constants; *); 1)
+				$Lon_nbConstants:=Count list items:C380($Lst_constants; *)
+				
+				If ($Lon_nbConstants>0)
+					Lsth_SortByParam($Lst_constants; "index")
 					
-					If (OK=1)
+					For ($Lon_j; 1; $Lon_nbConstants; 1)
 						
-						GET LIST ITEM:C378($Lst_constants; $Lon_j; $Lon_UID; $Txt_label)
-						GET LIST ITEM PARAMETER:C985($Lst_constants; $Lon_UID; "type"; $Txt_type)
-						
-						Case of 
-								//______________________________________________________
-							: ($Txt_type="R")
-								
-								//GET LIST ITEM PARAMETER($Lst_constants; $Lon_UID; "value"; $Num_value)
-								//$Txt_value:=String($Num_value)
-								GET LIST ITEM PARAMETER:C985($Lst_constants; $Lon_UID; "value"; $Txt_value)
-								XML DECODE:C1091($Txt_value; $Num_value)
-								
-								//______________________________________________________
-							: ($Txt_type="L")
-								
-								GET LIST ITEM PARAMETER:C985($Lst_constants; $Lon_UID; "value"; $Lon_value)
-								$Txt_value:=String:C10($Lon_value)
-								
-								//______________________________________________________
-							Else 
-								
-								GET LIST ITEM PARAMETER:C985($Lst_constants; $Lon_UID; "value"; $Txt_value)
-								
-								//______________________________________________________
-						End case 
-						
-						If (Position:C15($Txt_type; "RL")>0)
+						If (OK=1)
 							
-							$Txt_value:=Replace string:C233($Txt_value; ","; ".")
-							$Txt_value:=Replace string:C233($Txt_value; ".00000e"; "e")
-							$Txt_value:=Replace string:C233($Txt_value; ".0000e"; "e")
-							$Txt_value:=Replace string:C233($Txt_value; ".000e"; "e")
-							$Txt_value:=Replace string:C233($Txt_value; ".00e"; "e")
-							$Txt_value:=Replace string:C233($Txt_value; ".0e"; "e")
-							$Txt_value:=Replace string:C233($Txt_value; "e+0"; "")
-							$Txt_value:=Replace string:C233($Txt_value; " "; ""; 1)
+							GET LIST ITEM:C378($Lst_constants; $Lon_j; $Lon_UID; $Txt_label)
+							GET LIST ITEM PARAMETER:C985($Lst_constants; $Lon_UID; "type"; $Txt_type)
+							
+							Case of 
+									//______________________________________________________
+								: ($Txt_type="R")
+									
+									//GET LIST ITEM PARAMETER($Lst_constants; $Lon_UID; "value"; $Num_value)
+									//$Txt_value:=String($Num_value)
+									GET LIST ITEM PARAMETER:C985($Lst_constants; $Lon_UID; "value"; $Txt_value)
+									XML DECODE:C1091($Txt_value; $Num_value)
+									
+									//______________________________________________________
+								: ($Txt_type="L")
+									
+									GET LIST ITEM PARAMETER:C985($Lst_constants; $Lon_UID; "value"; $Lon_value)
+									$Txt_value:=String:C10($Lon_value)
+									
+									//______________________________________________________
+								Else 
+									
+									GET LIST ITEM PARAMETER:C985($Lst_constants; $Lon_UID; "value"; $Txt_value)
+									
+									//______________________________________________________
+							End case 
+							
+							If (Position:C15($Txt_type; "RL")>0)
+								
+								$Txt_value:=Replace string:C233($Txt_value; ","; ".")
+								$Txt_value:=Replace string:C233($Txt_value; ".00000e"; "e")
+								$Txt_value:=Replace string:C233($Txt_value; ".0000e"; "e")
+								$Txt_value:=Replace string:C233($Txt_value; ".000e"; "e")
+								$Txt_value:=Replace string:C233($Txt_value; ".00e"; "e")
+								$Txt_value:=Replace string:C233($Txt_value; ".0e"; "e")
+								$Txt_value:=Replace string:C233($Txt_value; "e+0"; "")
+								$Txt_value:=Replace string:C233($Txt_value; " "; ""; 1)
+								
+							End if 
+							
+							GET LIST ITEM PARAMETER:C985($Lst_constants; $Lon_UID; "fixed"; $Boo_fixed)
+							$Txt_value:=Choose:C955($Boo_fixed; $Txt_value+":"+$Txt_type; $Txt_value)
+							
+							//$Lon_constantId:=$Lon_constantId+1
+							GET LIST ITEM PARAMETER:C985($Lst_constants; $Lon_UID; "id"; $Txt_constantId)
+							If ($Txt_constantId="")
+								$Txt_constantId:=Generate UUID:C1066
+							End if 
+							CONSTANT_NEW_CONSTANT($Dom_constants; $Txt_value; $Txt_constantId; $Txt_label)
 							
 						End if 
+					End for 
+					
+					If ($Boo_expanded)
 						
-						GET LIST ITEM PARAMETER:C985($Lst_constants; $Lon_UID; "fixed"; $Boo_fixed)
-						$Txt_value:=Choose:C955($Boo_fixed; $Txt_value+":"+$Txt_type; $Txt_value)
-						
-						//$Lon_constantId:=$Lon_constantId+1
-						GET LIST ITEM PARAMETER:C985($Lst_constants; $Lon_UID; "id"; $Txt_constantId)
-						If ($Txt_constantId="")
-							$Txt_constantId:=Generate UUID:C1066
-						End if 
-						CONSTANT_NEW_CONSTANT($Dom_constants; $Txt_value; $Txt_constantId; $Txt_label)
+						$Lon_i:=$Lon_i+$Lon_j-1
 						
 					End if 
-				End for 
-				
-				If ($Boo_expanded)
-					
-					$Lon_i:=$Lon_i+$Lon_j-1
-					
 				End if 
 			End if 
 			

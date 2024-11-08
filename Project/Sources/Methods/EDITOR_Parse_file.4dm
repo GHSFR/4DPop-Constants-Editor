@@ -19,8 +19,6 @@ C_REAL:C285($Num_value)
 C_TEXT:C284($Dom_buffer; $Dom_element; $Dom_group; $Dom_root; $Dom_source; $kTxt_decimalSeparator; $Txt_buffer; $Txt_groupName; $Txt_name; $Txt_path)
 C_TEXT:C284($Txt_type; $Txt_value; $Txt_groupUuid; $Txt_groupId; $Dom_element2)
 
-ARRAY TEXT:C222($tDom_elements; 0)
-
 If (False:C215)
 	C_LONGINT:C283(EDITOR_Parse_file; $0)
 	C_TEXT:C284(EDITOR_Parse_file; $1)
@@ -120,6 +118,7 @@ If (OK=1)
 				SET LIST ITEM PARAMETER:C986($Lst_constants; 0; "index"; Form:C1466.lastThemeIndex)
 				SET LIST ITEM PARAMETER:C986($Lst_constants; 0; "id"; $Txt_groupId)
 				
+				ARRAY TEXT:C222($tDom_elements; 0)
 				$Dom_buffer:=DOM Find XML element:C864($Dom_group; "group/trans-unit"; $tDom_elements)
 				
 				For ($Lon_ii; 1; Size of array:C274($tDom_elements); 1)
@@ -292,6 +291,7 @@ If (OK=1)
 				//______________________________________________________
 			: ($Boo_themeDefinition)
 				
+				ARRAY TEXT:C222($tDom_elements; 0)
 				$Dom_buffer:=DOM Find XML element:C864($Dom_group; "group/trans-unit"; $tDom_elements)
 				
 				$Lon_x:=Size of array:C274($tDom_elements)
